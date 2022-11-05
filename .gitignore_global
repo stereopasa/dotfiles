@@ -1,0 +1,21 @@
+# Mac
+.DS_Store
+
+# VSCode
+.vscode/
+
+# WebStorm
+.idea/
+
+# npm
+npm-debug.log
+node_modules/
+
+# yarn
+yarn-error.log
+
+# git
+*.patch
+
+# eslint
+.eslintcache

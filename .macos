@@ -1,0 +1,204 @@
+#!/usr/bin/env bash
+
+# ~/.macos — https://mths.be/macos
+# Run without downloading:
+# curl https://raw.githubusercontent.com/stereopasa/dotfiles/HEAD/.macos | bash
+
+# Close any open System Preferences panes, to prevent them from overriding
+# settings we’re about to change
+osascript -e 'tell application "System Preferences" to quit'
+
+# Ask for the administrator password upfront
+sudo -v
+
+# Keep-alive: update existing `sudo` time stamp until `.macos` has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+###############################################################################
+# Customizations                                                       #
+###############################################################################
+
+echo "Hello $(whoami)! Let's get you set up."
+
+echo "mkdir -p ${HOME}/dev"
+mkdir -p "${HOME}/dev"
+
+echo "installing homebrew"
+# install homebrew https://brew.sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/stereopasa/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+echo "brew installing stuff"
+# imagemagick: eventually I will need this for something
+# ffmpeg: eventually I'll need this for something
+# tree: really handy for listing out directories in text
+brew install git imagemagick tree ffmpeg
+
+echo "installing node (via n-install)"
+curl -L https://git.io/n-install | bash
+
+echo "node --version: $(node --version)"
+echo "npm --version: $(npm --version)"
+
+# echo "installing a few global npm packages"
+# npm install --global serve fkill-cli npm-quick-run \
+# semantic-release-cli npm-check-updates
+
+echo "installing apps with brew --cask"
+brew install --cask alfred google-chrome firefox brave-browser 1password sublime-text vlc discord zoom \
+qlcolorcode qlmarkdown qlstephen quicklook-json webpquicklook suspicious-package dropbox loopback
+
+echo "Generating a new SSH key for GitHub"
+ssh-keygen -t ed25519 -C "me+github@stereopasa.com" -f ~/.ssh/id_ed25519
+eval "$(ssh-agent -s)"
+touch ~/.ssh/config
+echo "Host *\n AddKeysToAgent yes\n UseKeychain yes\n IdentityFile ~/.ssh/id_ed25519" | tee ~/.ssh/config
+ssh-add -K ~/.ssh/id_ed25519
+echo "run 'pbcopy < ~/.ssh/id_ed25519.pub' and paste that into GitHub"
+
+echo "cloning dotfiles"
+git clone git@github.com:stereopasa/dotfiles.git "${HOME}/dotfiles"
+ln -s "${HOME}/dotfiles/.zshrc" "${HOME}/.zshrc"
+ln -s "${HOME}/dotfiles/.gitignore_global" "${HOME}/.gitignore_global"
+ln -s "${HOME}/dotfiles/.gitconfig" "${HOME}/.gitconfig"
+
+# # get bat and delta all configured
+# mkdir -p "${HOME}/.config/bat/themes"
+# ln -s "${HOME}/dotfiles/.config/bat/config" "${HOME}/.config/bat/config"
+
+echo "making system modifications:"
+
+# Expand save panel by default
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+
+# Reveal IP address, hostname, OS version, etc. when clicking the clock
+# in the login window
+sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
+
+
+# Disable automatic capitalization as it’s annoying when typing code
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+
+
+###############################################################################
+# Screen                                                                      #
+###############################################################################
+
+# Save screenshots to the desktop
+defaults write com.apple.screencapture location -string "${HOME}/Desktop"
+
+# Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)
+defaults write com.apple.screencapture type -string "jpg"
+
+# Enable subpixel font rendering on non-Apple LCDs
+# Reference: https://github.com/kevinSuttle/macOS-Defaults/issues/17#issuecomment-266633501
+defaults write NSGlobalDomain AppleFontSmoothing -int 1
+
+# Enable HiDPI display modes (requires restart) ???
+sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
+
+###############################################################################
+# Finder                                                                      #
+###############################################################################
+
+# Finder: allow quitting via ⌘ + Q; doing so will also hide desktop icons
+defaults write com.apple.finder QuitMenuItem -bool true
+
+# Set Desktop as the default location for new Finder windows
+# For other paths, use `PfLo` and `file:///full/path/here/`
+defaults write com.apple.finder NewWindowTarget -string "PfDe"
+defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/Desktop/"
+
+# Finder: show hidden files by default
+defaults write com.apple.finder AppleShowAllFiles -bool true
+
+# Finder: show all filename extensions
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+# Finder: show status bar
+defaults write com.apple.finder ShowStatusBar -bool true
+
+# Finder: show path bar
+defaults write com.apple.finder ShowPathbar -bool true
+
+# Display full POSIX path as Finder window title
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+
+# Keep folders on top when sorting by name
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+
+# When performing a search, search the current folder by default
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+
+# Disable the warning when changing a file extension
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+# Enable spring loading for directories
+defaults write NSGlobalDomain com.apple.springing.enabled -bool true
+
+# Reduce the spring loading delay for directories
+defaults write NSGlobalDomain com.apple.springing.delay -float 0.2
+
+# Avoid creating .DS_Store files on network or USB volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
+
+
+###############################################################################
+# Safari & WebKit                                                             #
+###############################################################################
+
+# Privacy: don’t send search queries to Apple
+defaults write com.apple.Safari UniversalSearchEnabled -bool false
+defaults write com.apple.Safari SuppressSearchSuggestions -bool true
+
+# Set Safari’s home page to `about:blank` for faster loading
+defaults write com.apple.Safari HomePage -string "about:blank"
+
+# Prevent Safari from opening ‘safe’ files automatically after downloading
+defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+
+# Enable the Develop menu and the Web Inspector in Safari
+defaults write com.apple.Safari IncludeDevelopMenu -bool true
+defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+
+# Enable “Do Not Track”
+defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
+
+
+###############################################################################
+# Terminal & iTerm 2                                                          #
+###############################################################################
+
+# Only use UTF-8 in Terminal.app
+defaults write com.apple.terminal StringEncodings -array 4
+
+
+###############################################################################
+# Activity Monitor                                                            #
+###############################################################################
+
+# Show the main window when launching Activity Monitor
+defaults write com.apple.ActivityMonitor OpenMainWindow -bool true
+
+# Sort Activity Monitor results by CPU usage
+defaults write com.apple.ActivityMonitor SortColumn -string "CPUUsage"
+defaults write com.apple.ActivityMonitor SortDirection -int 0
+
+###############################################################################
+# Address Book, Dashboard, iCal, TextEdit, and Disk Utility                   #
+###############################################################################
+
+# Use plain text mode for new TextEdit documents
+defaults write com.apple.TextEdit RichText -int 0
+# Open and save files as UTF-8 in TextEdit
+defaults write com.apple.TextEdit PlainTextEncoding -int 4
+defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
+
+# Auto-play videos when opened with QuickTime Player
+defaults write com.apple.QuickTimePlayerX MGPlayMovieOnOpen -bool true
