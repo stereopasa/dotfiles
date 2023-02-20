@@ -1,4 +1,9 @@
 {
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#0A341E",
+    "titleBar.activeBackground": "#0E492A",
+    "titleBar.activeForeground": "#F3FDF8"
+  },
   "editor.renderWhitespace": "all",
   "git.autofetch": true,
   "editor.wordWrap": "on",
