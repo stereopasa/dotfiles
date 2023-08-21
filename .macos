@@ -36,6 +36,8 @@ echo "brew installing stuff"
 # tree: really handy for listing out directories in text
 brew install git zsh zsh-completions starship imagemagick tree ffmpeg lsd nvm speedtest trash-cli
 
+brew tap homebrew/cask-fonts
+
 # nvm volta?
 # echo "installing node (via n-install)"
 # curl -L https://git.io/n-install | bash
@@ -49,7 +51,8 @@ brew install git zsh zsh-completions starship imagemagick tree ffmpeg lsd nvm sp
 
 echo "installing apps with brew --cask"
 brew install --cask raycast google-chrome firefox brave-browser 1password sublime-text vlc discord zoom \
-qlcolorcode qlmarkdown qlstephen quicklook-json qlimagesize webpquicklook suspicious-package dropbox loopback
+suspicious-package dropbox loopback font-jetbrains-mono \
+qlcolorcode qlmarkdown qlstephen quicklook-json qlimagesize webpquicklook
 
 echo "Generating a new SSH key for GitHub"
 ssh-keygen -t ed25519 -C "me+github@stereopasa.me" -f ~/.ssh/id_ed25519
