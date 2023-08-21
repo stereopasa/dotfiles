@@ -4,8 +4,65 @@
     "titleBar.activeBackground": "#0E492A",
     "titleBar.activeForeground": "#F3FDF8"
   },
+  // "apc.activityBar": {
+  //   "position": "bottom",
+  //   "hideSettings": true,
+  //   "size": 25
+  // },
+  "apc.statusBar": {
+    "position": "editor-bottom",
+    "height": 22,
+    "fontSize": 12
+  },
+  "apc.electron": {
+    "titleBarStyle": "hiddenInset",
+    "trafficLightPosition": {
+      "x": 12,
+      "y": 8
+    }
+  },
+  "apc.font.family": "JetBrains Mono",
+  "apc.stylesheet": {
+    // remove overview ruler completely
+    ".editor .decorationsOverviewRuler": "display: none !important",
+    // make sticky widget fill the space left by the overview ruler
+    ".editor .sticky-widget": "padding-right: 14px !important",
+    // make sidebar titles and statusbar lowercase
+    ".monaco-workbench .part.sidebar>.title>.title-label *": "text-transform: lowercase !important",
+    ".monaco-pane-view .pane>.pane-header>.title": "text-transform: lowercase !important",
+    ".statusbar *": "text-transform: lowercase !important",
+    ".editor .title": "background: transparent !important;",
+    ".editor .title-border-bottom": "visibility: hidden !important;"
+  },
+  "apc.header": {
+    "height": 34,
+    "fontSize": 14
+  },
+  "apc.listRow": {
+    "height": 21,
+    "fontSize": 13
+  },
+
+  "workbench.sideBar.location": "right",
+  "workbench.iconTheme": "vscode-icons",
+
+  "terminal.integrated.fontFamily": "JetBrains Mono",
+
+  "editor.tokenColorCustomizations": {
+    "textMateRules": []
+  },
+  "editor.guides.bracketPairs": true,
+  "editor.fontFamily": "Jetbrains Mono",
+  "editor.fontWeight": "360",
+  "editor.fontSize": 12,
+  "editor.lineHeight": 16,
+  "editor.letterSpacing": -0.3333,
+
+  "editor.quickSuggestions": {
+    "other": "inline"
+  },
+  "editor.stickyScroll.enabled": true,
   "editor.renderWhitespace": "all",
-  "git.autofetch": true,
   "editor.wordWrap": "on",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[javascript]": {
@@ -15,5 +72,16 @@
   "[typescript]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+
+  "git.autofetch": true,
+  "git.autoStash": true,
+
+  "npm.packageManager": "pnpm",
+  "dotenv.enableAutocloaking": false,
+
+  "files.associations": {
+    ".env*": "dotenv",
+    "*.svg": "xml"
+  },
 }
